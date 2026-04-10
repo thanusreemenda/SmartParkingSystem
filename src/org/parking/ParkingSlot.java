@@ -2,43 +2,31 @@ package org.parking;
 
 public class ParkingSlot {
 
-    private int slotId;                          // unique slot number
-    private int level;                           // which floor
-    private VehicleType vehicleType;             // what type fits here
-    private boolean isOccupied;                  // taken or free
-    private static int totalSlots = 0;           // shared count of all slots
+    private int slotId;
+    private int level;
+    private VehicleType vehicleType;
+    private boolean isOccupied;
+    private static int totalSlots = 0;
+    private Vehicle parkedVehicle;        // ← NEW: stores parked vehicle
 
     public ParkingSlot(int slotId, int level, VehicleType vehicleType) {
         this.slotId = slotId;
         this.level = level;
         this.vehicleType = vehicleType;
-        this.isOccupied = false;                 // starts as free
-        totalSlots++;                            // increment shared count
+        this.isOccupied = false;
+        this.parkedVehicle = null;        // ← starts empty
+        totalSlots++;
     }
 
-    // Getters
-    public int getSlotId() {
-        return slotId;
-    }
+    public int getSlotId() { return slotId; }
+    public int getLevel() { return level; }
+    public VehicleType getVehicleType() { return vehicleType; }
+    public boolean isOccupied() { return isOccupied; }
+    public static int getTotalSlots() { return totalSlots; }
+    public Vehicle getParkedVehicle() { return parkedVehicle; } // ← NEW
 
-    public int getLevel() {
-        return level;
-    }
-
-    public VehicleType getVehicleType() {
-        return vehicleType;
-    }
-
-    public boolean isOccupied() {
-        return isOccupied;
-    }
-
-    public static int getTotalSlots() {          // static getter
-        return totalSlots;
-    }
-
-    // Setters
-    public void setOccupied(boolean occupied) {
-        isOccupied = occupied;
+    public void setOccupied(boolean occupied) { isOccupied = occupied; }
+    public void setParkedVehicle(Vehicle vehicle) {             // ← NEW
+        this.parkedVehicle = vehicle;
     }
 }

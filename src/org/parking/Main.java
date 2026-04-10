@@ -1,92 +1,136 @@
 package org.parking;
 
-import org.parking.ParkingSlot;
-import org.parking.ParkingSystem;
-import org.parking.VehicleType;
-
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
-        // ─────────────────────────────────────────
-        // 1. CREATE THE PARKING SYSTEM
-        // ─────────────────────────────────────────
         ParkingSystem system = new ParkingSystem();
+        Scanner scanner = new Scanner(System.in);
+        int choice;
 
-        // ─────────────────────────────────────────
-        // 2. ADD PARKING SLOTS
-        // ─────────────────────────────────────────
-        system.addSlot(new ParkingSlot(1, 1, VehicleType.CAR));
-        system.addSlot(new ParkingSlot(2, 1, VehicleType.CAR));
-        system.addSlot(new ParkingSlot(3, 1, VehicleType.BIKE));
-        system.addSlot(new ParkingSlot(4, 2, VehicleType.BIKE));
-        system.addSlot(new ParkingSlot(5, 2, VehicleType.TRUCK));
+        System.out.println("╔══════════════════════════════════╗");
+        System.out.println("║     SMART PARKING SYSTEM         ║");
+        System.out.println("╚══════════════════════════════════╝");
 
-        // ─────────────────────────────────────────
-        // 3. DISPLAY ALL SLOTS (before any vehicle)
-        // ─────────────────────────────────────────
-        system.displayAllSlots();
+        // Setup slots
+        System.out.print("\nHow many parking slots do you want to add? ");
+        int numSlots = scanner.nextInt();
 
-        // ─────────────────────────────────────────
-        // 4. VEHICLES ARRIVE — ADD TO QUEUE
-        // ─────────────────────────────────────────
-        Vehicle car1   = new Vehicle("CAR001",   VehicleType.CAR);
-        Vehicle car2   = new Vehicle("CAR002",   VehicleType.CAR);
-        Vehicle bike1  = new Vehicle("BIKE001",  VehicleType.BIKE);
-        Vehicle truck1 = new Vehicle("TRUCK001", VehicleType.TRUCK);
+        for (int i = 1; i <= numSlots; i++) {
+            System.out.println("\n--- Slot " + i + " ---");
+            System.out.print("Enter level (1/2/3...): ");
+            int level = scanner.nextInt();
 
-        system.addVehicleToQueue(car1);
-        system.addVehicleToQueue(car2);
-        system.addVehicleToQueue(bike1);
-        system.addVehicleToQueue(truck1);
+            // ← VALIDATED vehicle type input
+            int typeChoice = 0;
+            while (typeChoice < 1 || typeChoice > 3) {
+                System.out.print("Enter vehicle type (1=CAR, 2=BIKE, 3=TRUCK): ");
+                typeChoice = scanner.nextInt();
+                if (typeChoice < 1 || typeChoice > 3) {
+                    System.out.println("❌ Invalid! Please enter 1, 2 or 3 only.");
+                }
+            }
 
-        // ─────────────────────────────────────────
-        // 5. ALLOCATE SLOTS
-        // ─────────────────────────────────────────
-        System.out.println("\n─── Allocating Slots ───");
-        system.allocateSlot();   // car1  → slot 1
-        system.allocateSlot();   // car2  → slot 2
-        system.allocateSlot();   // bike1 → slot 3
-        system.allocateSlot();   // truck1→ slot 5
+            VehicleType type;
+            switch (typeChoice) {
+                case 2: type = VehicleType.BIKE; break;
+                case 3: type = VehicleType.TRUCK; break;
+                default: type = VehicleType.CAR; break;
+            }
+            system.addSlot(new ParkingSlot(i, level, type));
+        }
 
-        // ─────────────────────────────────────────
-        // 6. DISPLAY ALL SLOTS (after allocation)
-        // ─────────────────────────────────────────
-        system.displayAllSlots();
+        // Main menu
+        do {
+            System.out.println("\n╔══════════════════════════════════╗");
+            System.out.println("║            MAIN MENU             ║");
+            System.out.println("╠══════════════════════════════════╣");
+            System.out.println("║  1. Add Vehicle to Queue         ║");
+            System.out.println("║  2. Allocate Slot                ║");
+            System.out.println("║  3. Release Slot                 ║");
+            System.out.println("║  4. Display All Slots            ║");
+            System.out.println("║  5. Display Occupied Slots       ║");
+            System.out.println("║  6. Display Last Activity        ║");
+            System.out.println("║  7. Exit                         ║");
+            System.out.println("╚══════════════════════════════════╝");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
 
-        // ─────────────────────────────────────────
-        // 7. SIMULATE TIME PASSING (2 seconds)
-        // ─────────────────────────────────────────
-        System.out.println("Simulating time passing...");
-        Thread.sleep(2000);
+            switch (choice) {
 
-        // ─────────────────────────────────────────
-        // 8. RELEASE SLOTS — VEHICLES LEAVE
-        // ─────────────────────────────────────────
-        System.out.println("\n─── Vehicles Leaving ───");
-        system.releaseSlot(1, car1);
-        system.releaseSlot(3, bike1);
+                // ─── ADD VEHICLE ───
+                case 1: {
+                    System.out.print("Enter vehicle number: ");
+                    String vehicleNo = scanner.next();
 
-        // ─────────────────────────────────────────
-        // 9. DISPLAY LAST ACTIVITY
-        // ─────────────────────────────────────────
-        System.out.println("\n─── Last Activity ───");
-        system.displayLastActivity();
+                    // ← VALIDATED vehicle type input
+                    int typeChoice = 0;
+                    while (typeChoice < 1 || typeChoice > 3) {
+                        System.out.print("Enter vehicle type (1=CAR, 2=BIKE, 3=TRUCK): ");
+                        typeChoice = scanner.nextInt();
+                        if (typeChoice < 1 || typeChoice > 3) {
+                            System.out.println("❌ Invalid! Please enter 1, 2 or 3 only.");
+                        }
+                    }
 
-        // ─────────────────────────────────────────
-        // 10. DISPLAY ALL SLOTS (final state)
-        // ─────────────────────────────────────────
-        system.displayAllSlots();
+                    VehicleType type;
+                    switch (typeChoice) {
+                        case 2: type = VehicleType.BIKE; break;
+                        case 3: type = VehicleType.TRUCK; break;
+                        default: type = VehicleType.CAR; break;
+                    }
 
-        // ─────────────────────────────────────────
-        // 11. TEST FULL CAPACITY
-        // ─────────────────────────────────────────
-        System.out.println("─── Testing Full Capacity ───");
-        Vehicle car3 = new Vehicle("CAR003", VehicleType.CAR);
-        Vehicle car4 = new Vehicle("CAR004", VehicleType.CAR);
-        system.addVehicleToQueue(car3);
-        system.addVehicleToQueue(car4);
-        system.allocateSlot();   // car3 → slot 1 (freed earlier)
-        system.allocateSlot();   // car4 → no slot available!
+                    system.addVehicleToQueue(new Vehicle(vehicleNo, type));
+                    break;
+                }
+
+                // ─── ALLOCATE SLOT ───
+                case 2: {
+                    system.allocateSlot();
+                    break;
+                }
+
+                // ─── RELEASE SLOT ───
+                case 3: {
+                    System.out.print("Enter slot ID to release: ");
+                    int slotId = scanner.nextInt();
+                    system.releaseSlot(slotId);  // ← simplified, no need to enter vehicle
+                    break;
+                }
+
+                // ─── DISPLAY ALL SLOTS ───
+                case 4: {
+                    system.displayAllSlots();
+                    break;
+                }
+
+                // ─── DISPLAY OCCUPIED SLOTS ← NEW ───
+                case 5: {
+                    system.displayOccupiedSlots();
+                    break;
+                }
+
+                // ─── DISPLAY LAST ACTIVITY ───
+                case 6: {
+                    system.displayLastActivity();
+                    break;
+                }
+
+                // ─── EXIT ───
+                case 7: {
+                    System.out.println("\n✅ Thank you for using Smart Parking System!");
+                    System.out.println("   Goodbye! 👋");
+                    break;
+                }
+
+                default: {
+                    System.out.println("❌ Invalid choice! Enter 1-7.");
+                }
+            }
+
+        } while (choice != 7);
+
+        scanner.close();
     }
-}
+}1
